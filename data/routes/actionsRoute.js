@@ -4,6 +4,19 @@ const router = express.Router();
 
 //CREATE
 
+router.post('/', async (req, res) => {
+	try {
+		const { project_id, description, notes, completed } = req.body;
+		const newAction = { project_id, description, notes, completed };
+		const action = await actionsdb.insert(newAction);
+		res.status(201).json({ success: true, action });
+	} catch {
+		res.status(500).json({
+			error: 'The posts information could not be retrieved.',
+		});
+	}
+});
+
 //READ
 router.get('/', async (req, res) => {
 	try {

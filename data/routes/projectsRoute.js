@@ -28,6 +28,20 @@ router.get('/', async (req, res) => {
 	}
 });
 
+//READ
+
+router.get('/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+		const projectActions = await projectsdb.getProjectActions(id);
+		res.status(200).json({ success: true, projectActions });
+	} catch (error) {
+		res.status(500).json({
+			error: 'The posts information could not be retrieved.',
+		});
+	}
+});
+
 //UPDATE
 
 //DESTROY
