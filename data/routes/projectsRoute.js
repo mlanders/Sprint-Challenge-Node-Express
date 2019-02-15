@@ -61,9 +61,9 @@ router.put('/:id', async (req, res) => {
 
 //DESTROY
 
-router.delete('/:id', async (res, req) => {
+router.delete('/', async (res, req) => {
 	try {
-		const { id } = req.params;
+		const { id } = req.query;
 		const deleted = await projectsdb.remove(id);
 
 		res.status(200).json({ success: true, message: 'Successfully deleted the project' });
