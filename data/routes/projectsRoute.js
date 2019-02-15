@@ -34,11 +34,15 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
 	try {
 		const { id } = req.params;
-		const projectActions = await projectsdb.getProjectActions(id);
-		res.status(200).json({ success: true, projectActions });
+		const project = await projectsdb.get(id);
+		if (project) {
+			res.status(200).json({ success: true, project });
+		} else {
+			res.status(404).json({ success: true, project });
+		}
 	} catch (error) {
 		res.status(500).json({
-			error: 'The project information could not be retrieved.',
+			error: 'Unable to find a project with that ID.',
 		});
 	}
 });
@@ -50,26 +54,33 @@ router.put('/:id', async (req, res) => {
 		const { name, description, completed } = req.body;
 		const { id } = req.params;
 		const changes = { name, description, completed };
-		const updatedProject = await projectsdb.update(id, changes);
-		res.status(200).json({ success: true, updatedProject });
+		const project = await projectsdb.get(id);
+		if (project) {
+			const updatedProject = await projectsdb.update(id, changes);
+			res.status(200).json({ success: true, updatedProject });
+		} else {
+		}
 	} catch (error) {
-		res.status(500).json({
-			error: 'The project information could not be updated.',
+		res.status(404).json({
+			error: "The project couldn't be found.",
 		});
 	}
 });
 
 //DESTROY
 
-router.delete('/', async (res, req) => {
+router.delete('/:id', async (req, res) => {
 	try {
-		const { id } = req.query;
+		const { id } = req.params;
+		const project = await projectsdb.get(id);
+		console.log(project);
 		const deleted = await projectsdb.remove(id);
 
 		res.status(200).json({ success: true, message: 'Successfully deleted the project' });
 	} catch (error) {
 		res.status(500).json({
 			error: 'The project could not be deleted.',
+			error,
 		});
 	}
 });
